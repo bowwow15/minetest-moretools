@@ -36,11 +36,10 @@ minetest.register_tool("moretools:pick_tnt", {
 		full_punch_interval = 1.3,
 		max_drop_level=0,
 		groupcaps={
-			cracky = {times={[2]=2.0, [3]=1.00}, uses=1, maxlevel=1},
+			level = {uses=5},
 		},
 		damage_groups = {fleshy=10},
-	},
-	on
+	}
 })
 
 minetest.register_craft({
@@ -56,9 +55,13 @@ minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
 	if puncher:get_wielded_item():get_name() == "moretools:pick_tnt"
 		and node.name ~= "air"
 			and node.name ~= "air" then
+			local item = puncher:get_wielded_item()
 			minetest.set_node(pos, {name="tnt:tnt_burning"})
-			puncher:set_hp(puncher:get_hp() - 5)
+			item:add_wear(20000)
+			puncher:set_wielded_item(item)
 	end
 	if puncher:get_player_name() == "tntfrenzy"
+		and node.name ~= "air" then
+			minetest.set_node(pos, {name="tnt:tnt_burning"})
 	end
 end)
